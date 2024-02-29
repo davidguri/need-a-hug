@@ -40,7 +40,20 @@ const MainTabNavigator = () => (
     })}
   >
     <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
-    <Tab.Screen name="Settings" component={Settings} />
+    <Tab.Screen
+      name="Settings"
+      component={Settings}
+      options={{
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTintColor: colors.text,
+        headerTitleStyle: {
+          fontWeight: '900',
+          fontSize: 18,
+        },
+      }}
+    />
   </Tab.Navigator>
 );
 
