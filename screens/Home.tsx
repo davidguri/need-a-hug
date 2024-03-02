@@ -5,25 +5,39 @@ import { colors } from '../constants/colors';
 
 // const Emoji = require('../assets/hugging_emoji.png');
 
+import RequestHug from "../components/modals/RequestHug";
+import SendHug from "../components/modals/SendHug";
+
 export default function Home() {
+
+  const [isRequestVisible, setIsRequestVisible] = React.useState(false);
+  const [isSendVisible, setIsSendVisible] = React.useState(false);
+
+  const toggleRequestVisible = () => setIsRequestVisible(!isRequestVisible);
+  const toggleSendVisible = () => setIsSendVisible(!isSendVisible);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-      />
-      <View style={styles.content}>
-        {/* <Image source={Emoji} style={{ width: 240, height: 240, marginBottom: 20 }} /> */}
-        <Text style={styles.title}>Need A Hug?</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.button, styles.buttonLight]} onPress={() => { }}>
-            <Text style={styles.buttonText}>Yes!</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.buttonDark]} onPress={() => { }}>
-            <Text style={styles.buttonText}>Send One Instead.</Text>
-          </TouchableOpacity>
+    <>
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+        />
+        <View style={styles.content}>
+          {/* <Image source={Emoji} style={{ width: 240, height: 240, marginBottom: 20 }} /> */}
+          <Text style={styles.title}>Need A Hug?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.button, styles.buttonLight]} onPress={toggleRequestVisible}>
+              <Text style={styles.buttonText}>Yes!</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.buttonDark]} onPress={toggleSendVisible}>
+              <Text style={styles.buttonText}>Send One Instead.</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+      <RequestHug isVisible={isRequestVisible} cancel={toggleRequestVisible} />
+      <SendHug isVisible={isSendVisible} cancel={toggleSendVisible} />
+    </>
   );
 }
 
