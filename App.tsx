@@ -10,7 +10,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from "./screens/Home";
 import Settings from "./screens/Settings";
 
-import { colors } from "./constants/colors"
+import { colors } from "./constants/colors";
+
+import { getAuth } from "firebase/auth";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

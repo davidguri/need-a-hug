@@ -1,25 +1,51 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { firebase } from '@react-native-firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-interface AuthenticationProps {
-  onSignIn: () => void;
-}
-
-const Authentication: React.FC<AuthenticationProps> = ({ onSignIn }) => {
+export default function Authentication() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
-        onSignIn(); // Notify parent component that sign-in is successful
+  const auth = getAuth();
+
+  const handleSignUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        console.log(user);
       })
       .catch((error) => {
-        // Handle sign-in errors
-        console.error('Error signing in:', error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode, errorMessage)
       });
   };
+
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const uid = user.uid;
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
 
   return (
     <View style={styles.container}>
@@ -40,6 +66,7 @@ const Authentication: React.FC<AuthenticationProps> = ({ onSignIn }) => {
         placeholder="Enter your password"
         secureTextEntry
       />
+      <Button title="Sign Up" onPress={handleSignUp} />
       <Button title="Sign In" onPress={handleSignIn} />
     </View>
   );
@@ -62,5 +89,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-
-export default Authentication;
