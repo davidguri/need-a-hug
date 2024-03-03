@@ -1,20 +1,60 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
 import { colors } from '../constants/colors';
 
 export default function Authentication() {
+  const [dname, setDname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const auth = getAuth();
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
-        console.log(user);
+        updateProfile(auth.currentUser, {
+          photoURL: "https://api.dicebear.com/7.x/big-ears-neutral/png?randomizeIds=true",
+          displayName: dname,
+        }).then(() => {
+          console.log('✅ Profile updated successfully');
+        }).catch((error) => {
+          console.error('❌ Error updating profile: ', error.message);
+        });
+        // console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode, errorMessage)
+      });
+    const userData = {
+      email: email,
+      displayName: dname,
+      photoURL: "https://api.dicebear.com/7.x/big-ears-neutral/png?randomizeIds=true",
+    };
+    try {
+      const docRef = await addDoc(collection(db, "users"), userData);
+      console.log("✅ Document written with ID: ", docRef.id);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error('❌ Error saving user data to Firestore', errorCode, errorMessage)
+    };
+  };
+
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log('Signed in successfully: ', user);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -23,31 +63,6 @@ export default function Authentication() {
       });
   };
 
-  const handleSignIn = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-  };
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      const uid = user.uid;
-      // ...
-    } else {
-      // User is signed out
-      // ...
-    }
-  });
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -55,12 +70,21 @@ export default function Authentication() {
           barStyle="light-content"
         />
         <View style={styles.content}>
-          <Text style={styles.title}>Welcome To Need-A-Hug!</Text>
+          <Text style={styles.title}>Welcome!</Text>
+          <TextInput
+            style={styles.input}
+            value={dname}
+            onChangeText={setDname}
+            placeholder="Full Name"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholderTextColor={colors.text}
+          />
           <TextInput
             style={styles.input}
             value={email}
             onChangeText={setEmail}
-            placeholder="Enter your email"
+            placeholder="Email"
             keyboardType="email-address"
             autoCapitalize="none"
             placeholderTextColor={colors.text}
@@ -69,15 +93,15 @@ export default function Authentication() {
             style={styles.input}
             value={password}
             onChangeText={setPassword}
-            placeholder="Enter your password"
+            placeholder="Password"
             secureTextEntry
             placeholderTextColor={colors.text}
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.darkButton]} onPress={handleSignUp}>
+            <TouchableOpacity style={[styles.button, styles.lightButton]} onPress={handleSignUp}>
               <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.lightButton]} onPress={handleSignIn}>
+            <TouchableOpacity style={[styles.button, styles.darkButton]} onPress={handleSignIn}>
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
           </View>
