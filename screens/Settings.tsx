@@ -18,10 +18,10 @@ export default function Settings() {
 
   const user = auth.currentUser;
 
-  const updateProfileHandler = async (dname: string, purl: string) => {
+  const updateProfileHandler = async (dname: string) => {
     updateProfile(auth.currentUser, {
       displayName: dname,
-      photoURL: "https://source.boringavatars.com/marble/120/Maria%20Mitchell?colors=264653,2a9d8f,e9c46a,f4a261,e76f51",
+      photoURL: "https://source.boringavatars.com/marble/120/",
     }).then(() => {
       console.log('Profile updated successfully');
     }).catch((error) => {
