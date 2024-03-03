@@ -1,6 +1,5 @@
 import React from "react";
-import { StatusBar } from 'react-native';
-import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { colors } from '../constants/colors';
 
 // const Emoji = require('../assets/hugging_emoji.png');

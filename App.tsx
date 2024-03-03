@@ -9,10 +9,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from "./screens/Home";
 import Settings from "./screens/Settings";
+import Authentication from "./screens/Authentication";
 
 import { colors } from "./constants/colors";
 
-import { getAuth } from "firebase/auth";
+import { auth } from "./firebase";
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -60,14 +62,28 @@ const MainTabNavigator = () => (
 );
 
 export default function App() {
+
+  const [user, setUser]: any = React.useState();
+  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUser(user);
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* Auth Flow */}
-        {/* Add screens for authentication flow if needed */}
-
-        {/* Main App Flow */}
-        <Stack.Screen options={{ headerShown: false }} name="Main" component={MainTabNavigator} />
+        {!user ? (
+          <Stack.Screen name="Auth" component={Authentication} options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
