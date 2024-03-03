@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 15,
     paddingVertical: 15,
+    color: colors.text,
   },
 
   buttonContainer: {
@@ -147,5 +148,5 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontWeight: "900",
     fontSize: 18
-  }
+  },
 });

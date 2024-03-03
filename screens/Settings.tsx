@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, Button } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
 import { colors } from '../constants/colors';
 
 import { auth } from "../firebase";
@@ -31,8 +31,13 @@ export default function Settings() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+      />
       <Text>Welcome to the settings page {(user.displayName) ? user.displayName : user.email}</Text>
-      <Button title="Sign Out" onPress={handleSignOut} />
+      <TouchableOpacity style={[styles.button, styles.darkButton]} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -43,12 +48,38 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightBackground,
     color: colors.lightText,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
 
   title: {
-    color: colors.text,
+    color: colors.lightText,
     fontSize: 64,
     fontWeight: "900"
-  }
+  },
+
+  button: {
+    width: '100%',
+    paddingVertical: 15,
+    marginBottom: 12,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+
+  lightButton: {
+    backgroundColor: colors.lightSecondary,
+    color: colors.lightText
+  },
+
+  darkButton: {
+    backgroundColor: colors.secondary,
+    color: colors.text
+  },
+
+  buttonText: {
+    color: colors.text,
+    fontWeight: "900",
+    fontSize: 18
+  },
 });
