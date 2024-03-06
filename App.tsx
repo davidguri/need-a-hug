@@ -94,9 +94,7 @@ export default function App() {
           <Stack.Screen
             name="Main"
             component={MainTabNavigator}
-            options={{
-              headerShown: false,
-            }}
+            options={{ headerShown: false }}
           />
         )}
       </Stack.Navigator>

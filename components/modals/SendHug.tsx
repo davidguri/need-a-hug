@@ -35,7 +35,6 @@ export default function SendHug(props: any) {
               value={dname}
               onChangeText={setDname}
               placeholder="Who To?"
-              keyboardType="email-address"
               autoCapitalize="none"
               placeholderTextColor={colors.text}
             />
