@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from "./screens/Home";
+import Friends from "./screens/Friends";
 import Settings from "./screens/Settings";
 import Authentication from "./screens/Authentication";
 
@@ -19,6 +20,20 @@ import { onAuthStateChanged } from 'firebase/auth';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const headerStyles: any = {
+  headerStyle: {
+    backgroundColor: colors.background,
+    elevation: 0,
+    shadowOpacity: 0,
+    borderBottomWidth: 0,
+  },
+  headerTintColor: colors.text,
+  headerTitleStyle: {
+    fontWeight: '900',
+    fontSize: 18,
+  },
+}
+
 const MainTabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -27,10 +42,8 @@ const MainTabNavigator = () => (
 
         if (route.name === 'Home') {
           icon = <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />;
-        } else if (route.name === 'SendHug') {
+        } else if (route.name === 'Friends') {
           icon = <Ionicons name={focused ? 'heart' : 'heart-outline'} size={size} color={color} />;
-        } else if (route.name === 'ReceiveHug') {
-          icon = <Ionicons name={focused ? 'heart-circle' : 'heart-circle-outline'} size={size} color={color} />;
         } else if (route.name === 'Settings') {
           icon = <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />;
         }
@@ -45,18 +58,14 @@ const MainTabNavigator = () => (
   >
     <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
     <Tab.Screen
+      name="Friends"
+      component={Friends}
+      options={headerStyles}
+    />
+    <Tab.Screen
       name="Settings"
       component={Settings}
-      options={{
-        headerStyle: {
-          backgroundColor: colors.background,
-        },
-        headerTintColor: colors.text,
-        headerTitleStyle: {
-          fontWeight: '900',
-          fontSize: 18,
-        },
-      }}
+      options={headerStyles}
     />
   </Tab.Navigator>
 );
@@ -82,7 +91,13 @@ export default function App() {
         {!user ? (
           <Stack.Screen name="Auth" component={Authentication} options={{ headerShown: false }} />
         ) : (
-          <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
+          <Stack.Screen
+            name="Main"
+            component={MainTabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
         )}
       </Stack.Navigator>
     </NavigationContainer>

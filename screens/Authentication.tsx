@@ -8,6 +8,7 @@ import { db } from "../firebase";
 import { colors } from '../constants/colors';
 
 export default function Authentication() {
+
   const [dname, setDname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -76,7 +77,6 @@ export default function Authentication() {
             value={dname}
             onChangeText={setDname}
             placeholder="Full Name"
-            keyboardType="email-address"
             autoCapitalize="none"
             placeholderTextColor={colors.text}
           />
@@ -94,6 +94,7 @@ export default function Authentication() {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            autoCapitalize="none"
             secureTextEntry
             placeholderTextColor={colors.text}
           />

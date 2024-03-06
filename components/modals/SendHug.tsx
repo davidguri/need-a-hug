@@ -1,6 +1,6 @@
 import React from "react";
 import { StatusBar } from 'react-native';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { colors } from '../../constants/colors';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 
 export default function SendHug(props: any) {
+
+  const [dname, setDname] = React.useState('');
+
   return (
     <Modal
       isVisible={props.isVisible}
@@ -27,6 +30,15 @@ export default function SendHug(props: any) {
           </View>
           <View style={styles.bottomContainer}>
             <Text style={styles.title}>I Want To Send A Hug!</Text>
+            <TextInput
+              style={styles.input}
+              value={dname}
+              onChangeText={setDname}
+              placeholder="Who To?"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor={colors.text}
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -68,5 +80,17 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontWeight: "900",
     textAlign: "center",
+    marginBottom: 32,
   },
+
+  input: {
+    width: '100%',
+    borderWidth: 3.2,
+    borderColor: colors.primary,
+    borderRadius: 25,
+    marginBottom: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    color: colors.text,
+  }
 });
