@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, ActivityIndicator, FlatList } from 'react-native';
 import { colors } from '../constants/colors';
 
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -9,27 +9,35 @@ import Button from "../components/ui/Button";
 
 export default function Friends() {
 
-  const [email, setEmail] = React.useState('');
-  const [isValid, setIsValid] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [selected, setSelected] = React.useState("");
+  const [selected, setSelected] = React.useState(true);
 
-  const searchEmail = async (email: string) => {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState([]);
+
+  const handleSearch = async () => {
     try {
-      const q = query(collection(db, 'users'), where('email', '==', email));
+      console.log('Search Query:', searchQuery);
+
+      if (!searchQuery || searchQuery.trim() === '') {
+        setSearchResults([]); // Clear search results if searchQuery is empty
+        return;
+      }
+
+      const q = query(collection(db, 'users'), where('email', '==', searchQuery));
       const querySnapshot = await getDocs(q);
 
-      const usersWithEmail = [];
+      const users = [];
       querySnapshot.forEach((doc) => {
-        // Here you can access the documents that match the email
         const userData = doc.data();
-        usersWithEmail.push(userData);
+        users.push(userData);
       });
 
-      return usersWithEmail;
+      setSearchResults(users);
+
+      console.log('Number of documents:', querySnapshot.size);
+      console.log(searchResults);
     } catch (error) {
-      console.error('Error searching for email:', error);
-      return [];
+      console.error('Error searching for users:', error);
     }
   };
 
@@ -41,16 +49,28 @@ export default function Friends() {
         />
         <View style={styles.content}>
           <Text style={styles.title}>Friends</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter Email Of Friend"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholderTextColor={colors.text}
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.input}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="Enter Email Of Friend"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor={colors.text}
+            />
+            <Button light={false} text="Search" onPress={handleSearch} textStyles={{ marginHorizontal: 24 }} />
+          </View>
+          <FlatList
+            data={searchResults}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={{ marginBottom: 12 }}>
+                <Text style={{ color: colors.text }}>{item.displayName}</Text>
+                <Text style={{ color: colors.text }}>{item.email}</Text>
+              </View>
+            )}
           />
-          <Text style={styles.validText}>The email is {isLoading ? (<ActivityIndicator size="small" color="#D7DEFE" />) : (isValid ? "valid" : "not valid")}.</Text>
           <Button light={true} text="Add Friend" styles={{ opacity: (selected ? 1 : 0.75) }} onPress={() => { }} disabled={selected ? false : true} />
         </View>
       </SafeAreaView>
@@ -82,13 +102,21 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    width: '100%',
+    flex: 1,
     borderWidth: 3.2,
     borderColor: colors.primary,
     borderRadius: 25,
     paddingHorizontal: 15,
     paddingVertical: 15,
     color: colors.text,
+  },
+
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: 'center',
+    width: "100%",
+    marginBottom: 12,
+    gap: 12,
   },
 
   validText: {

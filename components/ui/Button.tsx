@@ -5,7 +5,7 @@ import { colors } from '../../constants/colors';
 export default function Button(props: any) {
   return (
     <TouchableOpacity style={[styles.button, (props.light ? styles.buttonLight : styles.buttonDark), props.styles]} onPress={props.onPress} disabled={props.disabled}>
-      <Text style={styles.buttonText}>{props.text}</Text>
+      <Text style={[styles.buttonText, props.textStyles]}>{props.text}</Text>
     </TouchableOpacity>
   );
 }
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.text,
     fontWeight: "900",
-    fontSize: 18
+    fontSize: 18,
+    marginHorizontal: 12,
   },
 });
