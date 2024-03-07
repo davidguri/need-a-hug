@@ -42,6 +42,8 @@ const MainTabNavigator = () => (
 
         if (route.name === 'Home') {
           icon = <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />;
+        } else if (route.name === 'Hugs') {
+          icon = <Ionicons name={focused ? 'people' : 'people-outline'} size={size} color={color} />;
         } else if (route.name === 'Friends') {
           icon = <Ionicons name={focused ? 'heart' : 'heart-outline'} size={size} color={color} />;
         } else if (route.name === 'Settings') {
@@ -57,6 +59,11 @@ const MainTabNavigator = () => (
     })}
   >
     <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
+    <Tab.Screen
+      name="Hugs"
+      component={Friends}
+      options={headerStyles}
+    />
     <Tab.Screen
       name="Friends"
       component={Friends}
