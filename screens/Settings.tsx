@@ -1,9 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, Image, TouchableWithoutFeedback } from 'react-native';
 import { colors } from '../constants/colors';
 
 import { auth } from "../firebase";
-import { signOut, getAuth } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
+
+import Button from "../components/ui/Button";
+
+import ImageModal from "../components/modals/Image";
 
 export default function Settings() {
 
@@ -18,37 +22,44 @@ export default function Settings() {
 
   const user = auth.currentUser;
 
+  const [isImageVisible, setIsImageVisible] = React.useState(false);
+
+  const toggleImageVisible = () => setIsImageVisible(!isImageVisible);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-      />
-      <View style={styles.topContainer}>
-        <View style={styles.userDetailsContainer}>
-          <View style={styles.userDetailsLeftContainer}>
-            <Image
-              source={{ uri: user.photoURL }}
-              style={styles.userDetailsPhoto}
-              onError={(error) => console.error('Image load error:', error)}
-            />
-          </View>
-          <View style={styles.userDetailsRightContainer}>
-            <Text style={styles.userDetailsUsername}>{(user.displayName) ? user.displayName : user.email}</Text>
-            {(user.displayName) ? (
-              <Text style={styles.userDetailsEmail}>{user.email}</Text>
-            ) : (
-              <View style={{ width: 0, height: 0 }} />
-            )}
+    <>
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+        />
+        <View style={styles.topContainer}>
+          <View style={styles.userDetailsContainer}>
+            <View style={styles.userDetailsLeftContainer}>
+              <TouchableWithoutFeedback onPress={toggleImageVisible}>
+                <Image
+                  source={{ uri: user.photoURL }}
+                  style={styles.userDetailsPhoto}
+                  onError={(error) => console.error('Image load error:', error)}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.userDetailsRightContainer}>
+              <Text style={styles.userDetailsUsername}>{(user.displayName) ? user.displayName : user.email}</Text>
+              {(user.displayName) ? (
+                <Text style={styles.userDetailsEmail}>{user.email}</Text>
+              ) : (
+                <View style={{ width: 0, height: 0 }} />
+              )}
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.bottomContainer}>
-        <TouchableOpacity style={[styles.button, styles.darkButton]} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>Sign Out</Text>
-        </TouchableOpacity>
-        <Text style={styles.bottomText}>Made With ❤️ By David Guri</Text>
-      </View>
-    </SafeAreaView>
+        <View style={styles.bottomContainer}>
+          <Button light={false} text="Sign Out" onPress={handleSignOut} />
+          <Text style={styles.bottomText}>Made With ❤️ By David Guri</Text>
+        </View>
+      </SafeAreaView>
+      <ImageModal isVisible={isImageVisible} cancel={toggleImageVisible} url={user.photoURL} />
+    </>
   );
 }
 

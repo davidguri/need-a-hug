@@ -7,6 +7,8 @@ import { colors } from '../constants/colors';
 import RequestHug from "../components/modals/RequestHug";
 import SendHug from "../components/modals/SendHug";
 
+import Button from "../components/ui/Button";
+
 export default function Home() {
 
   const [isRequestVisible, setIsRequestVisible] = React.useState(false);
@@ -25,12 +27,8 @@ export default function Home() {
           {/* <Image source={Emoji} style={{ width: 240, height: 240, marginBottom: 20 }} /> */}
           <Text style={styles.title}>Need A Hug?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.buttonLight]} onPress={toggleRequestVisible}>
-              <Text style={styles.buttonText}>Yes!</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.buttonDark]} onPress={toggleSendVisible}>
-              <Text style={styles.buttonText}>Send One Instead.</Text>
-            </TouchableOpacity>
+            <Button light={true} text="Yes!" onPress={toggleRequestVisible} />
+            <Button light={false} text="Send One Instead" onPress={toggleSendVisible} />
           </View>
         </View>
       </SafeAreaView>

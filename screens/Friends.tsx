@@ -5,11 +5,14 @@ import { colors } from '../constants/colors';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
+import Button from "../components/ui/Button";
+
 export default function Friends() {
 
   const [email, setEmail] = React.useState('');
   const [isValid, setIsValid] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [selected, setSelected] = React.useState("");
 
   const searchEmail = async (email: string) => {
     try {
@@ -47,7 +50,8 @@ export default function Friends() {
             autoCapitalize="none"
             placeholderTextColor={colors.text}
           />
-          <Text style={styles.validText}>The email is {isLoading ? (<ActivityIndicator size="small" color="#0000ff" />) : (isValid ? "valid" : "not valid")}.</Text>
+          <Text style={styles.validText}>The email is {isLoading ? (<ActivityIndicator size="small" color="#D7DEFE" />) : (isValid ? "valid" : "not valid")}.</Text>
+          <Button light={true} text="Add Friend" styles={{ opacity: (selected ? 1 : 0.75) }} onPress={() => { }} disabled={selected ? false : true} />
         </View>
       </SafeAreaView>
     </>
@@ -82,7 +86,6 @@ const styles = StyleSheet.create({
     borderWidth: 3.2,
     borderColor: colors.primary,
     borderRadius: 25,
-    marginBottom: 12,
     paddingHorizontal: 15,
     paddingVertical: 15,
     color: colors.text,
@@ -91,5 +94,7 @@ const styles = StyleSheet.create({
   validText: {
     color: colors.text,
     marginLeft: 18.2,
+    marginVertical: 12,
+    opacity: 0.75,
   }
 });
