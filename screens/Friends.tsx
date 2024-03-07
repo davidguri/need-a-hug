@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, ActivityIndicator } from 'react-native';
 import { colors } from '../constants/colors';
 
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -9,18 +9,7 @@ export default function Friends() {
 
   const [email, setEmail] = React.useState('');
   const [isValid, setIsValid] = React.useState(false);
-
-  const debounce = (func: any, delay: number) => {
-    let timeoutId: any;
-
-    return (...args: any) => {
-      clearTimeout(timeoutId);
-
-      timeoutId = setTimeout(() => {
-        func.apply(this, args);
-      }, delay);
-    };
-  }
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const searchEmail = async (email: string) => {
     try {
@@ -41,10 +30,6 @@ export default function Friends() {
     }
   };
 
-  const debouceSearch = debounce(searchEmail, 500);
-
-  // TODO: add search function here...
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -62,7 +47,7 @@ export default function Friends() {
             autoCapitalize="none"
             placeholderTextColor={colors.text}
           />
-          <Text style={styles.validText}>The email is {isValid ? "valid" : "not valid"}.</Text>
+          <Text style={styles.validText}>The email is {isLoading ? (<ActivityIndicator size="small" color="#0000ff" />) : (isValid ? "valid" : "not valid")}.</Text>
         </View>
       </SafeAreaView>
     </>
