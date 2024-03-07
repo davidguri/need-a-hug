@@ -99,12 +99,14 @@ const styles = StyleSheet.create({
   userDetailsUsername: {
     fontWeight: "900",
     fontSize: 24,
-    marginBottom: 4.2
+    marginBottom: 4.2,
+    color: colors.lightText,
   },
 
   userDetailsEmail: {
     fontSize: 16,
     opacity: 0.75,
+    color: colors.lightText,
   },
 
   userDetailsPhoto: {

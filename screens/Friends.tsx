@@ -7,6 +7,8 @@ import { db, auth } from '../firebase';
 
 import Button from "../components/ui/Button";
 
+import Profile from "../components/modals/Profile";
+
 export default function Friends() {
 
   const userEmail = auth.currentUser.email;
@@ -17,6 +19,10 @@ export default function Friends() {
 
   const [friends, setFriends] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+
+  const [isVisibleProfile, setIsVisibleProfile] = React.useState(false);
+
+  const toggleProfileVisible = () => setIsVisibleProfile(!isVisibleProfile);
 
   React.useEffect(() => {
     const fetchFriends = async () => {
@@ -147,14 +153,19 @@ export default function Friends() {
             data={friends}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <View style={[styles.listItem, { width: "100%", marginHorizontal: "0%" }]}>
-                <Image
-                  source={{ uri: item.photoURL }}
-                  style={styles.listPhoto}
-                  onError={(error) => console.error('Image load error:', error)}
-                />
-                <Text style={styles.listText}>{item.displayName}</Text>
-              </View>
+              <>
+                <TouchableOpacity key={item.id} onPress={toggleProfileVisible}>
+                  <View style={[styles.listItem, { marginHorizontal: "0%", width: "100%" }]}>
+                    <Image
+                      source={{ uri: item.photoURL }}
+                      style={styles.listPhoto}
+                      onError={(error) => console.error('Image load error:', error)}
+                    />
+                    <Text style={styles.listText}>{item.displayName}</Text>
+                  </View>
+                </TouchableOpacity>
+                <Profile isVisible={isVisibleProfile} cancel={toggleProfileVisible} photoUrl={item.photoURL} email={item.email} displayName={item.displayName} />
+              </>
             )}
           />
         </View>
