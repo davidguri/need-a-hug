@@ -13,6 +13,8 @@ export default function Authentication() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [uid, setUid] = useState('');
+
   const auth = getAuth();
 
   const handleSignUp = async () => {
@@ -28,7 +30,7 @@ export default function Authentication() {
         }).catch((error) => {
           console.error('❌ Error updating profile: ', error.message);
         });
-        // console.log(user);
+        setUid(user.uid);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -38,10 +40,11 @@ export default function Authentication() {
     const userData = {
       email: email,
       displayName: dname,
+      friends: [],
       photoURL: "https://api.dicebear.com/7.x/big-ears-neutral/png?randomizeIds=true",
     };
     try {
-      const docRef = await addDoc(collection(db, "users"), userData);
+      const docRef = await addDoc(collection(db, "users", uid), userData);
       console.log("✅ Document written with ID: ", docRef.id);
     } catch (error) {
       const errorCode = error.code;
