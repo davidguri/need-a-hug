@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, TextInput, Image, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { colors } from '../constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 import { collection, query, where, getDocs, updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import { db, auth } from '../firebase';
@@ -24,32 +25,32 @@ export default function Friends() {
 
   const toggleProfileVisible = () => setIsVisibleProfile(!isVisibleProfile);
 
-  React.useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const usersCollectionRef = collection(db, 'users');
-        const q = query(usersCollectionRef, where('email', '==', userEmail));
-        const querySnapshot = await getDocs(q);
+  const fetchFriends = async () => {
+    try {
+      const usersCollectionRef = collection(db, 'users');
+      const q = query(usersCollectionRef, where('email', '==', userEmail));
+      const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0];
-          const userData = userDoc.data();
-          const userFriends = userData.friends || [];
-          setFriends(userFriends);
-        }
-      } catch (error) {
-        console.error('❌ Error fetching friends:', error);
-      } finally {
-        setLoading(false);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userFriends = userData.friends || [];
+        setFriends(userFriends);
       }
-    };
+    } catch (error) {
+      console.error('❌ Error fetching friends:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  React.useEffect(() => {
     fetchFriends();
   }, []);
 
   const handleSearch = async () => {
     try {
-      console.log('Search Query:', searchQuery);
+      // console.log('Search Query:', searchQuery);
 
       if (!searchQuery || searchQuery.trim() === '') {
         setSearchResults([]); // Clear search results if searchQuery is empty
@@ -67,18 +68,22 @@ export default function Friends() {
 
       setSearchResults(filteredResults);
 
-      console.log('Number of documents:', querySnapshot.size);
-      console.log(searchResults);
+      // console.log('Number of documents:', querySnapshot.size);
+      // console.log(searchResults);
     } catch (error) {
-      console.error('Error searching for users:', error);
+      console.error('❌ Error searching for users:', error);
     }
   };
 
   // TODO: add debounce functionality
 
   const handleSelectItem = (item: any) => {
-    setSelected(item);
-    console.log('Selected item:', item);
+    if (!selected) {
+      setSelected(item)
+    } else {
+      setSelected(null);
+    }
+    // console.log('Selected item:', item);
   };
 
   const addFriend = async () => {
@@ -87,7 +92,7 @@ export default function Friends() {
       const querySnapshot = await getDocs(query(usersCollectionRef, where('email', '==', userEmail)));
 
       if (querySnapshot.size === 0) {
-        console.log('No document found with the email:', userEmail);
+        console.log('❌ No document found with the email:', userEmail);
         return;
       }
 
@@ -100,6 +105,8 @@ export default function Friends() {
       });
 
       console.log('✅ Friend added successfully to user with email:', userEmail);
+
+      Alert.alert(`Yay! You have successfully added ${newData.displayName}!`);
     } catch (error) {
       console.error('❌ Error adding friend to user:', error);
     }
@@ -113,7 +120,7 @@ export default function Friends() {
           barStyle="light-content"
         />
         <View style={styles.content}>
-          <Text style={styles.title}>Add Friends</Text>
+          <Text style={styles.title}>Add Friends<Text style={{ color: colors.accent }}>.</Text></Text>
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.input}
@@ -134,7 +141,7 @@ export default function Friends() {
                 <ActivityIndicator size="large" color="#fff" />
               ) : (
                 <TouchableOpacity key={item.id} onPress={() => handleSelectItem(item)}>
-                  <View style={styles.listItem}>
+                  <View style={[styles.listItem, { backgroundColor: selected ? colors.primary : colors.lightBackground }]}>
                     <Image
                       source={{ uri: item.photoURL }}
                       style={styles.listPhoto}
@@ -148,7 +155,12 @@ export default function Friends() {
             )}
           />
           <Button light={true} text="Add Friend" styles={{ opacity: (selected ? 1 : 0.75) }} onPress={addFriend} disabled={selected ? false : true} />
-          <Text style={[styles.title, { marginTop: 64 }]}>Your Friends</Text>
+          <View style={styles.titleContainer}>
+            <Text style={[styles.title, { marginBottom: 0 }]}>Your Friends<Text style={{ color: colors.accent }}>.</Text></Text>
+            <TouchableOpacity onPress={() => fetchFriends()}>
+              <Ionicons name='refresh' size={32} color={colors.accent} />
+            </TouchableOpacity>
+          </View>
           <FlatList
             data={friends}
             keyExtractor={(item, index) => index.toString()}
@@ -189,12 +201,22 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
   },
 
+  titleContainer: {
+    height: "auto",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    marginTop: 64,
+    marginBottom: 21,
+  },
+
   title: {
     color: colors.text,
-    fontSize: 60,
+    fontSize: 48,
     fontWeight: "900",
     textAlign: "center",
-    marginBottom: 32,
+    marginBottom: 21,
   },
 
   input: {

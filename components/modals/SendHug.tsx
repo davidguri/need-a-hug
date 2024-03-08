@@ -12,11 +12,7 @@ import { db, auth } from '../../firebase';
 
 import Button from "../ui/Button";
 
-import { useNavigation } from "@react-navigation/native";
-
 export default function SendHug(props: any) {
-
-  const nav = useNavigation();
 
   const userEmail = auth.currentUser.email;
 
@@ -27,26 +23,26 @@ export default function SendHug(props: any) {
 
   const [message, setMessage] = React.useState('');
 
-  React.useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const usersCollectionRef = collection(db, 'users');
-        const q = query(usersCollectionRef, where('email', '==', userEmail));
-        const querySnapshot = await getDocs(q);
+  const fetchFriends = async () => {
+    try {
+      const usersCollectionRef = collection(db, 'users');
+      const q = query(usersCollectionRef, where('email', '==', userEmail));
+      const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const userDoc = querySnapshot.docs[0];
-          const userData = userDoc.data();
-          const userFriends = userData.friends || [];
-          setFriends(userFriends);
-        }
-      } catch (error) {
-        console.error('❌ Error fetching friends:', error);
-      } finally {
-        setLoading(false);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+        const userFriends = userData.friends || [];
+        setFriends(userFriends);
       }
-    };
+    } catch (error) {
+      console.error('❌ Error fetching friends:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  React.useEffect(() => {
     fetchFriends();
   }, []);
 
@@ -74,6 +70,7 @@ export default function SendHug(props: any) {
       style={{ margin: 0 }}
       animationIn={"slideInRight"}
       animationOut={"slideOutRight"}
+      avoidKeyboard={true}
     >
       <SafeAreaView style={styles.container}>
         <StatusBar
@@ -86,7 +83,7 @@ export default function SendHug(props: any) {
             </TouchableOpacity>
           </View>
           <View style={styles.middleContainer}>
-            <Text style={styles.title}>I Want To Send A Hug!</Text>
+            <Text style={styles.title}>I Want To Send A Hug<Text style={{ color: colors.accent }}>!</Text></Text>
             <Text style={styles.subtitle}>Select who you want to send the hug to and the message.</Text>
             <TextInput
               style={styles.input}
@@ -96,7 +93,12 @@ export default function SendHug(props: any) {
               autoCapitalize="none"
               placeholderTextColor={colors.text}
             />
-            <Text style={{ color: colors.text, marginBottom: 12, fontWeight: "800", fontSize: 16 }}>List Of Friends:</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 12, width: "100%", justifyContent: "center", marginBottom: 16 }}>
+              <Text style={{ color: colors.text, fontWeight: "800", fontSize: 16 }}>List Of Friends:</Text>
+              <TouchableOpacity onPress={() => fetchFriends()}>
+                <Ionicons name='refresh' size={25} color={colors.accent} />
+              </TouchableOpacity>
+            </View>
             <FlatList
               data={friends}
               keyExtractor={(item, index) => index.toString()}
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   },
 
   middleContainer: {
-    flex: 1,
+    flex: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
     borderWidth: 3.2,
     borderColor: colors.primary,
     borderRadius: 25,
-    marginBottom: 12,
+    marginBottom: 16,
     paddingHorizontal: 15,
     paddingVertical: 15,
     color: colors.text,

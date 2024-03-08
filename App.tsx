@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from "./screens/Home";
+import Hugs from "./screens/Hugs";
 import Friends from "./screens/Friends";
 import Settings from "./screens/Settings";
 import Authentication from "./screens/Authentication";
@@ -61,7 +62,7 @@ const MainTabNavigator = () => (
     <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
     <Tab.Screen
       name="Hugs"
-      component={Friends}
+      component={Hugs}
       options={headerStyles}
     />
     <Tab.Screen

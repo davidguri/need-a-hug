@@ -25,7 +25,7 @@ export default function Home() {
         />
         <View style={styles.content}>
           {/* <Image source={Emoji} style={{ width: 240, height: 240, marginBottom: 20 }} /> */}
-          <Text style={styles.title}>Need A Hug?</Text>
+          <Text style={styles.title}>Need A Hug<Text style={{ color: colors.accent }}>?</Text></Text>
           <View style={styles.buttonContainer}>
             <Button light={true} text="Yes!" onPress={toggleRequestVisible} />
             <Button light={false} text="Send One Instead" onPress={toggleSendVisible} />
