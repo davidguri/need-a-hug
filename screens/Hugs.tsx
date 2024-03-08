@@ -17,7 +17,7 @@ export default function Friends() {
           barStyle="light-content"
         />
         <View style={styles.content}>
-          <Text style={styles.title}>Hugs Sent To You<Text style={{ color: colors.accent }}>!</Text></Text>
+          <Text style={styles.title}>Hugs<Text style={{ color: colors.accent }}>!</Text></Text>
         </View>
       </SafeAreaView>
     </>
