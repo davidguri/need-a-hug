@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { collection, query, where, getDocs, updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import { auth } from '../firebase';
 
+import Hug from "../components/modals/Hug";
+
 export default function Friends() {
 
   const userEmail = auth.currentUser.email;
@@ -17,7 +19,8 @@ export default function Friends() {
           barStyle="light-content"
         />
         <View style={styles.content}>
-          <Text style={styles.title}>Hugs<Text style={{ color: colors.accent }}>!</Text></Text>
+          <Text style={styles.title}>Hugs Sent To You<Text style={{ color: colors.accent }}>!</Text></Text>
+          <Text style={styles.title}>Hugs You Sent<Text style={{ color: colors.accent }}>!</Text></Text>
         </View>
       </SafeAreaView>
     </>
