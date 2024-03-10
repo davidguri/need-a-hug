@@ -6,8 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { collection, query, where, getDocs, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
-import Hug from "../components/modals/Hug";
-
 export default function Hugs() {
 
   const userEmail = auth.currentUser.email;
@@ -21,7 +19,7 @@ export default function Hugs() {
       const querySnapshot = await getDocs(query(receivedHugsCollectionRef, where('receiverEmail', '==', userEmail)));
 
       if (querySnapshot.empty) {
-        console.log('❌ No documents found with the email:', userEmail);
+        // console.log('❌ No documents found with the email:', userEmail);
         return;
       }
 
@@ -42,7 +40,7 @@ export default function Hugs() {
       const querySnapshot = await getDocs(query(sentHugsCollectionRef, where('senderEmail', '==', userEmail)));
 
       if (querySnapshot.empty) {
-        console.log('❌ No documents found with the sender email:', userEmail);
+        // console.log('❌ No documents found with the sender email:', userEmail);
         return;
       }
 
@@ -75,10 +73,18 @@ export default function Hugs() {
             keyExtractor={item => item.id}
             style={{ marginBottom: 64 }}
             renderItem={({ item }) => (
-              <View>
-                <Text style={{ color: colors.text }}>From: {item.senderEmail}</Text>
-                <Text style={{ color: colors.text }}>Message: {item.message}</Text>
-                {/* Display other hug details as needed */}
+              <View style={[styles.listItem]}>
+                <View style={styles.listItemTopContainer}>
+                  <Image
+                    source={{ uri: item.senderPhotoUrl }}
+                    style={styles.listPhoto}
+                    onError={(error) => console.error('Image load error:', error)}
+                  />
+                  <Text style={styles.listText}>{item.senderDisplayName}</Text>
+                </View>
+                <View style={styles.listItemBottomContainer}>
+                  <Text style={{ color: colors.lightText, marginLeft: "9.5%", marginBottom: "5%" }}>{item.message}</Text>
+                </View>
               </View>
             )}
           />
@@ -120,5 +126,39 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     textAlign: "center",
     marginBottom: 32,
+  },
+
+  listItem: {
+    marginBottom: 16,
+    width: "80%",
+    marginHorizontal: "10%",
+    flexDirection: "column",
+    gap: 12,
+    backgroundColor: colors.lightBackground,
+    borderRadius: 23.5,
+  },
+
+  listItemTopContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+
+  listItemBottomContainer: {},
+
+  listText: {
+    color: colors.lightText,
+    fontWeight: "900",
+    fontSize: 18,
+  },
+
+  listPhoto: {
+    height: 48,
+    width: 48,
+    resizeMode: 'cover',
+    borderRadius: 50,
+    borderWidth: 1.6,
+    borderColor: colors.background
   },
 });

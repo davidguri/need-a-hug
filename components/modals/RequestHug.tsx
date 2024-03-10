@@ -50,6 +50,8 @@ export default function RequestHug(props: any) {
     try {
       const docRef = await addDoc(collection(db, "requestedHugs"), {
         senderEmail: userEmail,
+        senderPhotoUrl: auth.currentUser.photoURL,
+        senderDisplayName: auth.currentUser.displayName,
         receiverEmail: rEmail,
         timestamp: Date.now(),
         message: message,
