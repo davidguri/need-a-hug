@@ -11,15 +11,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.davidg06.needahug"
+      "bundleIdentifier": "com.davidg06.needahug",
+      "runtimeVersion": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
       }
     },
     "web": {
@@ -29,6 +35,9 @@
       "eas": {
         "projectId": "e90c4f19-def1-4e1d-9fcd-0c8d9a48eda2"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/e90c4f19-def1-4e1d-9fcd-0c8d9a48eda2"
     }
   }
 }
