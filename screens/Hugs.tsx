@@ -93,9 +93,18 @@ export default function Hugs() {
             data={sentHugs}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View>
-                <Text style={{ color: colors.text }}>To: {item.receiverEmail}</Text>
-                <Text style={{ color: colors.text }}>Message: {item.message}</Text>
+              <View style={[styles.listItem]}>
+                <View style={styles.listItemTopContainer}>
+                  <Image
+                    source={{ uri: item.senderPhotoUrl }}
+                    style={styles.listPhoto}
+                    onError={(error) => console.error('Image load error:', error)}
+                  />
+                  <Text style={styles.listText}>{item.senderDisplayName}</Text>
+                </View>
+                <View style={styles.listItemBottomContainer}>
+                  <Text style={{ color: colors.lightText, marginLeft: "9.5%", marginBottom: "5%" }}>{item.message}</Text>
+                </View>
               </View>
             )}
           />
